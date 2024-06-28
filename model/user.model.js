@@ -51,6 +51,7 @@ const userLoginValid = (data) => {
   });
 };
 
+
 const updateUserPassword=async(data)=>{ 
  return  new Promise((resolve,reject)=>{
         //password  selecting query
@@ -66,14 +67,17 @@ const updateUserPassword=async(data)=>{
         }
          
         //check password is meching
-        if (data.body.password===result[0].password) {
+        if (data.body.password==result[0].password) {
           console.log('passoword match'); 
+        }else{
+           console.log("password is not match");
+           throw new Error('Invalid credemtials')
         }
         
         //update passowrd query
        connection.query('UPDATE user SET password = ? WHERE id = ?', [data.body.newPassword, data.id]);
          console.log('user password update successfully');
-        resolve(result);
+        resolve(result); 
       });
     })     
   }
@@ -107,26 +111,24 @@ const updateUserPassword=async(data)=>{
 
 
 // Delete user in mysql
-const deleteUser=(data) => {
+const deleteUserData=async(data) => {
   return new Promise((resolve,reject)=>{
-    
+        const userId = data;
+        console.log("user id",userId);
+    const query = 'DELETE FROM user WHERE id = ?';
+     connection.query(query, [userId], (err, result) => {
+        if (err) {
+            console.error(err);
+            return reject (err)
+        }
+          
+        if (result.affectedRows === 0) {
+            return reject (new Error ("not found user"))
+        }
+        resolve (result)
+    });
   })
-  const userId = req.id;
-
-  const query = 'DELETE FROM users WHERE id = ?';
-  db.query(query, [userId], (err, result) => {
-      if (err) {
-          console.error(err);
-          return res.status(500).send('Server error');
-      }
-
-      if (result.affectedRows === 0) {
-          return res.status(404).send('User not found');
-      }
-
-      res.send('User deleted successfully');
-  });
 };
 
 
-  export { insertUserAndGetId,userLoginValid ,updateUserPassword};
+  export { insertUserAndGetId,userLoginValid ,deleteUserData,updateUserPassword};

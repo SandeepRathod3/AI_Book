@@ -13,8 +13,11 @@ app.use(express.json());
 // router
 import userRouter from './Router/user.router.js'
 
+
 // router declaration
 app.use("/users", userRouter)
+ 
+
 
 
 app.listen(process.env.PORT|| 7000,()=>{

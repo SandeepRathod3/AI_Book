@@ -9,12 +9,15 @@ try {
   //console.log('Token:', token);  
    // console.log(process.env.SECRETKEY);
     const decoded = jwt.verify(token, process.env.SECRETKEY);
-   // console.log(decoded)
-      if(req.password=== decoded.password){
-        console.log('authorization successfully')
+   console.log("decode data" ,decoded) 
+   console.log("req password",req.body.password)
+      if(req.body.password!== decoded.password){ 
+        throw new Error("token is not valid")
       }
+    
       //console.log(decoded.userid);
       req.id=decoded.userid
+      console.log('authorization successfully')
      next();
   } catch(err) {
     // err

@@ -2,18 +2,20 @@ import { connection } from "../DB/db.js";
 import {
   insertUserAndGetId,
   userLoginValid,
-  updateUserPassword,
+  updateUserPassword,deleteUserData
 } from "../model/user.model.js"; 
 import jwt from "jsonwebtoken";
 import  crypto from 'crypto-js'
 
+
+// SIGN-IN USER
 const signInUser = async (req, res) => {
   try {
     const { name, email, password, contect_no, address } = req.body;
 
     //console.log(name, email, password, contect_no, address);
     if (!(name && email && password && contect_no && address)) {
-      res.status(400).json({ message: "all field are required(name,email,password,contect_no,address)" });
+      return   res.status(400).json({ message: "all field are required(name,email,password,contect_no,address)" });
     }
       const hashPassword=crypto.MD5(password).toString();
       // console.log(hashPassword)
@@ -35,6 +37,7 @@ const signInUser = async (req, res) => {
   }
 };
 
+//LOGIN USER
 const loginUser = async (req, res) => {
   try {
     const { name, password } = req.body;
@@ -81,7 +84,9 @@ const loginUser = async (req, res) => {
   return  res.status(500).json({ message: "Internal server error" });
   }   
 };
-    
+
+
+//UPDATE USER  ACCOUNT PASSWORD
 const updatePassword = async (req, res) => {
   try {
     const {password, newPassword } = req.body;
@@ -108,4 +113,32 @@ const updatePassword = async (req, res) => {
   }
 };
 
-export { signInUser, loginUser, updatePassword };
+
+//DELETE USER ACCOUNT
+const deleteUser= async(req,res)=>{ 
+  try {
+       const deletedUser= await deleteUserData(req.id)
+       if(!deleteUser){
+        return res.status(400).json({message:"data is not deleted"})
+       }
+       return res.status(200).json({message:"data is deleted"})
+  } catch (error) {
+    console.log(error)
+    return res.status(400).json({message:"Error in delete data"})
+  }
+}
+
+//EDIT USER DETAILS 
+const editDetail=async(req,res)=>{
+  try {
+        const updateDetail=req.body
+        
+
+  } catch (error) {
+    
+  }
+}
+
+
+
+export { signInUser, loginUser,deleteUser, updatePassword };
